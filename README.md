@@ -366,28 +366,28 @@ There are a lot of options for other test options. These include long-term optio
 Set your Apple ID and app-specific password for Fastlane's pilot, you need to set up environment variables. Follow these steps:
 
 1. First, generate an app-specific password for your Apple ID:  
-  a. Sign in to the Apple ID website.  
-  b. Scroll down to the "Security" section.
-  c. Click on "Generate Password..." under "App-Specific Passwords."  
-  d. Provide a label for the password (e.g., "Fastlane") and click "Create."  
-  e. Copy the generated password.  
+   1. Sign in to the Apple ID website.  
+   2. Scroll down to the "Security" section.
+   3. Click on "Generate Password..." under "App-Specific Passwords."  
+   4. Provide a label for the password (e.g., "Fastlane") and click "Create."  
+   5. Copy the generated password.  
 2. Set up environment variables:  
-  a. Open ~/.bashrc if you're using the Bash shell or ~/.zshrc if you're using the Zsh shell on your computer. Create a new file if it doesn't exist.  
-  b. Add the following lines to the open file:   
-    ```
-    export FASTLANE_USER="your-apple-id-email"
-    export FASTLANE_PASSWORD="your-app-specific-password" 
-    ```
-    Replace your-apple-id-email with your Apple ID email and your-app-specific-password with the password you generated in step 1.  
-  c. Save and close the file.  
-  d. Open a new terminal or run the following command to load the changes:  
-    ```
-	source ~/.bashrc
-    ```
-	or
-	```
-	source ~/.zshrc
-	```
+   1. Open ~/.bashrc if you're using the Bash shell or ~/.zshrc if you're using the Zsh shell on your computer. Create a new file if it doesn't exist.  
+   2. Add the following lines to the open file:   
+   ```
+   export FASTLANE_USER="your-apple-id-email"
+   export FASTLANE_PASSWORD="your-app-specific-password" 
+   ```
+   3. Replace your-apple-id-email with your Apple ID email and your-app-specific-password with the password you generated in step 1.  
+   4. Save and close the file.  
+   5. Open a new terminal or run the following command to load the changes:  
+   ```
+   source ~/.bashrc
+   ```
+   or
+   ```
+   source ~/.zshrc
+   ```
 Now, Fastlane's pilot will use the FASTLANE_USER and FASTLANE_PASSWORD environment variables for authentication. Make sure to keep your app-specific password secure, as it can access sensitive information associated with your Apple ID.
 
 ...
