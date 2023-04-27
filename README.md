@@ -7,7 +7,7 @@
 - Platfroms & Lanes
 - Match (Team-based code signing)
 - Lane Tips
-- Beta Testing Workflow
+- Test Buildings & Distribution
 
 ### Resources
 - http://fastlane.tools
@@ -37,6 +37,13 @@
     - fastlane match nuke distribution 
 - `fastlane gym`
   - Automate beta deployments and releases for the iOS apps.
+- `fastlane pilot upload`
+- `fastlane pilot builds`
+  - A list of our uploaded builds and their download counts
+- `fastlane pilot list`
+  - A list of all testers.
+- `fastlane pilot find <email>`
+  - Info of the specific tester.
 
 ## Prepare for Fastlane
 
@@ -296,7 +303,7 @@ private_lane :some_action do
 end
 ```
 
-## Beta Testing Workflow
+## Test Buildings & Distribution
 
 ### Gym
 
@@ -310,5 +317,77 @@ The command, `fastlane gym init`, scaffolds a new Ruby Gymfile configuration in 
 clean true
 scheme "Our Scheme"
 ```
+
+### Gym Example Lanes
+
+```ruby
+desc "Sync your certificates and profiles across your team"
+lane :sync_all_development do |options|
+	sync_device_info
+	selectedType = options[:type]
+	match(type: selectedType)
+end
+
+desc "Build for App Store submission"
+lane :build_appstore do
+	sync_all_development(type: "appstore")
+	gym(
+		output_directory: "build_Appstore",
+		export_method: "app-store"
+	)
+end
+
+desc "Build for Ad Hoc submission"
+lane :build_adhoc do
+	sync_all_development(type: "adhoc")
+	gym(
+		output_directory: "build_AdHoc",
+		export_method: "ad-hoc"
+	)
+end
+```
+
+## Pilot
+
+The fastlane action that's the way to manage your TestFlight testers and builds from your terminal. Conventionally, uploading an app to TestFligh, you need to manage at `appstoreconnect.apple.com` and manually adjusting internal and external testers each group as you need to. 
+
+### Enable Auto Versioning
+
+[Learn more about automating Version and Build Numbers Using agvtool >](https://developer.apple.com/library/archive/qa/qa1827/_index.html)
+
+<img width="1461" alt="Screenshot 2023-04-27 at 15 54 36" src="Resources/234813434-7333a543-570b-4b2d-8fc5-e66e158776b9.png">
+
+### Other Test Options
+
+There are a lot of options for other test options. These include long-term option like Crashlytics or HockeyApp. [Learn more >](https://docs.fastlane.tools/actions/#beta)
+
+### Pilot to AppStore
+
+Set your Apple ID and app-specific password for Fastlane's pilot, you need to set up environment variables. Follow these steps:
+
+1. First, generate an app-specific password for your Apple ID:  
+  a. Sign in to the Apple ID website.  
+  b. Scroll down to the "Security" section.
+  c. Click on "Generate Password..." under "App-Specific Passwords."  
+  d. Provide a label for the password (e.g., "Fastlane") and click "Create."  
+  e. Copy the generated password.  
+2. Set up environment variables:  
+  a. Open ~/.bashrc if you're using the Bash shell or ~/.zshrc if you're using the Zsh shell on your computer. Create a new file if it doesn't exist.  
+  b. Add the following lines to the open file:   
+    ```
+    export FASTLANE_USER="your-apple-id-email"
+    export FASTLANE_PASSWORD="your-app-specific-password" 
+    ```
+    Replace your-apple-id-email with your Apple ID email and your-app-specific-password with the password you generated in step 1.  
+  c. Save and close the file.  
+  d. Open a new terminal or run the following command to load the changes:  
+    ```
+	source ~/.bashrc
+    ```
+	or
+	```
+	source ~/.zshrc
+	```
+Now, Fastlane's pilot will use the FASTLANE_USER and FASTLANE_PASSWORD environment variables for authentication. Make sure to keep your app-specific password secure, as it can access sensitive information associated with your Apple ID.
 
 ...
