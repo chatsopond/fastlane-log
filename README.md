@@ -7,7 +7,7 @@
 - Platfroms & Lanes
 - Match (Team-based code signing)
 - Lane Tips
-- Environment and Settings
+- Beta Testing Workflow
 
 ### Resources
 - http://fastlane.tools
@@ -28,11 +28,15 @@
     - Revoke the expired certifications
 - `fastlane sigh`
   - Generates a provisioning profile, saving it in the current folder
+- `fastlane match`
+  - Sync the certificates and profiles across the team
 - `fastlane match nuke <mode>` 
   - command is used to completely delete (nuke) certificate management data and provisioning profile management data in an Apple Developer account or a Google Play user account. This command is useful when you want to start fresh with certificate and provisioning profile management or when you need to delete problematic data.
   - Please note that the `nuke` command should be used with caution, as deleting data in developer or user accounts is irreversible. Make sure you have backed up any important data before using this command.
   - Example
     - fastlane match nuke distribution 
+- `fastlane gym`
+  - Automate beta deployments and releases for the iOS apps.
 
 ## Prepare for Fastlane
 
@@ -292,4 +296,19 @@ private_lane :some_action do
 end
 ```
 
+## Beta Testing Workflow
 
+### Gym
+
+The way to automate beta deployments and releases for your iOS and Android apps.
+
+### Init Gym
+
+The command, `fastlane gym init`, scaffolds a new Ruby Gymfile configuration in our project fastlane subdirectory. As with other fastlane config files, setting here in `Gymfile` effectively serve as project-wide defaults applying to gym in both the command line and in lanes.
+
+```ruby
+clean true
+scheme "Our Scheme"
+```
+
+...
