@@ -8,6 +8,7 @@
 - Match (Team-based code signing)
 - Lane Tips
 - Test Buildings & Distribution
+- App Submission and Approval
 
 ### Resources
 - http://fastlane.tools
@@ -386,4 +387,34 @@ Set your Apple ID and app-specific password for Fastlane's pilot, you need to se
    ```
 Now, Fastlane's pilot will use the FASTLANE_USER and FASTLANE_PASSWORD environment variables for authentication. Make sure to keep your app-specific password secure, as it can access sensitive information associated with your Apple ID.
 
+## App Submission and Approval
+
+In this section, we will first explore precheck, a Fastlane action that examines app metadata content for potential rejection issues. Next, we'll learn how to generate screenshots for our app across all target devices automatically using Fastlane snapshot. Following that, we'll be introduced to frameit, which allows us to insert each image into a customized device frame. Lastly, we'll discover deliver, a powerful action that manages the entire submission process of these assets directly to the App Store, handling an impressive amount of work.
+
+### Precheck & Metadata
+
+Precheck facilitates the examination of our app metadata proactively for potential issues that might lead to rejection through an automated process. Specifically designed to help us identify and resolve detectable App Store review guideline violations in our apps, Precheck retrieves our app's metadata from the App Store and assesses it for rule violations. These may include mentioning competing platforms, profanities, unreplaced placeholder text, broken URLs, and several other concerns.
+
+It's good to place a parameter in Precheckfile by simply call `fastlane precheck init`
+
+```
+app_identifier "com.company.app"
+username "appleid@email.com"
+team_name "Our team name"
+```
+
+### Release Lane
+
+```
+lane :release do
+	precheck
+	UI.success "Successfully precheck..."
+end
+```
+
+### Snapshot
+
+Fastlane's snapshot is an exceptional tool designed to automate the process of capturing and organizing screenshots for apps, especially when dealing with multiple localizations. Imagine our app is available in 10 languages, requiring a considerable amount of screenshots. Instead of manually capturing and organizing these images, snapshot streamlines the process, making it highly efficient and time-saving. This powerful feature becomes even more valuable when updating our app, as it allows us to effortlessly regenerate and update the screenshots, ensuring they are always up-to-date and accurately representing the latest version of our app.
+
 ...
+
