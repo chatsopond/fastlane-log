@@ -416,5 +416,195 @@ end
 
 Fastlane's snapshot is an exceptional tool designed to automate the process of capturing and organizing screenshots for apps, especially when dealing with multiple localizations. Imagine our app is available in 10 languages, requiring a considerable amount of screenshots. Instead of manually capturing and organizing these images, snapshot streamlines the process, making it highly efficient and time-saving. This powerful feature becomes even more valuable when updating our app, as it allows us to effortlessly regenerate and update the screenshots, ensuring they are always up-to-date and accurately representing the latest version of our app.
 
+**Snapshot Setup**
+- Create a dedicated Test Target & Scheme for snapshot.
+- Run `snapshot init` in Terminal.
+  - To generate a custom SnapshotHelper Swift file.
+- Add `Snapshot Helper.swift` to your Test Target
+- Add a UI Test method to step through app views.
+- Call `snapshot()` to take photos.
+
+**snapshot init**
+
+After called `snapshot init`. It will show us the instrustion. We'll need to do follow this instruction.
+
+```
+Open your Xcode project and make sure to do the following:
+1) Add a new UI Test target to your project
+2) Add the ./fastlane/SnapshotHelper.swift to your UI Test target
+   You can move the file anywhere you want
+3) Call `setupSnapshot(app)` when launching your app
+
+  let app = XCUIApplication()
+  setupSnapshot(app)
+  app.launch()
+
+4) Add `snapshot("0Launch")` to wherever you want to trigger screenshots
+5) Add a new Xcode scheme for the newly created UITest target
+6) Add a Check to enable the `Shared` box of the newly created scheme
+```
+
+**Snapfile**
+
+```ruby
+devices([
+	"iPhone SE (3rd generation)",
+	"iPhone 14",
+	"iPhone 14 Pro",
+	"iPhone 14 Pro Max"
+])
+
+languages([
+  "en-US",
+  "th-TH",
+])
+
+scheme("Fastlane Snapshots")
+
+# Clean snapshots
+stop_after_first_error true
+erase_simulator true
+clear_previous_screenshots true
+reinstall_app true
+```
+
+**Example Test File**
+
+```swift
+override class func setUp() {
+  let app = XCUIApplication()
+  setupSnapshot(app)
+  app.launch()
+}
+
+func testSnapshot() {
+  let app = XCUIApplication()
+  snapshot("0Launch")
+  app.buttons["Home"].tap()
+  snapshot("1Home")
+  app.buttons["Profile"].tap()
+  snapshot("2Profile")
+}
+```
+
+**Start the snapshot**
+
+To start all works, just simply call `fastlane snapshot` in Terminal. Once it's finish, it will show the screenshot in your browser and all file will be in `screenshots` folder by default.
+
+### Frameit
+
+Fastlane's Frameit feature, a powerful tool that allows you to capture high-quality screenshots for your app and prepare them for the App Store. The process of utilizing Frameit for this purpose will be explained.
+
+Capturing screenshots can be a challenging task, often involving numerous downloads and time-consuming manual processes. Although editing these images in Photoshop is possible, it isn't the most efficient approach, especially for developers looking to focus on their programming skills.
+
+Frameit is a useful tool that specializes in framing your screenshots with style and precision. To make the most of this tool, it's important to familiarize yourself with ImageMagick, a longstanding cross-platform software suite.
+
+This section will guide you through using Frameit and ImageMagick to create visually appealing screenshots for your app, ensuring it stands out in the App Store. By following the information provided here, you can save time and effort while perfecting your app's presentation in a neutral manner.
+
+1. ImageMagick:
+
+To install ImageMagick, visit the official website and download the appropriate version for your operating system: https://imagemagick.org/script/download.php
+
+2. Prepare Your Screenshots:
+
+Before you start framing your screenshots with Frameit, ensure that you have all the necessary screenshots captured for your app. Ideally, you should have images representing key features and functionalities, as well as images showcasing your app on different devices.
+
+3. Configure Frameit:
+
+To use Frameit, you need to create a configuration file called 'Framefile.json' in your project directory. This file will specify settings such as the device frames to be used, the background color, and the text to be displayed on the screenshots.
+
+Here's an example of a basic Framefile.json configuration:
+
+```
+{
+  "device_frame_version": "latest",
+  "default": {
+    "title": {
+      "color": "#ffffff"
+    },
+    "background": "./background.png",
+    "padding": 50
+  },
+  "data": [
+    {
+      "filter": "iPhone 8",
+      "frame": "Apple iPhone 8 Space Gray"
+    },
+    {
+      "filter": "iPhone X",
+      "frame": "Apple iPhone X Space Gray"
+    }
+  ]
+}
+```
+
+4. Run Frameit:
+
+With the Framefile.json file set up, you can now run Frameit. Open a terminal window, navigate to the project directory containing your screenshots and the Framefile.json file, and run the following command:
+
+```
+fastlane frameit
+```
+
+Frameit will process your screenshots according to the configuration specified in the Framefile.json file.
+
+5. Customize Your Screenshots with ImageMagick:
+
+ImageMagick offers a wide range of image manipulation options. You can use it to resize, crop, or add text overlays to your framed screenshots. For example, to add a watermark to a screenshot, you can run the following command:
+
+```
+convert input_screenshot.png -gravity southeast -annotate +10+10 "Watermark Text" output_screenshot.png
+```
+
+This command will add the watermark text to the bottom right corner of the input image and save the result as a new file.
+
+Fastlane's Frameit and ImageMagick are powerful tools that can help you create stunning screenshots for your app, ensuring it stands out in the App Store. By following the steps outlined in this article, you can save time and effort while perfecting your app's presentation. Remember to experiment with different configurations and ImageMagick features to achieve the desired look for your app's screenshots.
+
+### Deliver
+
+Deploying an app to the App Store can be a time-consuming process, especially when dealing with metadata, screenshots, and build submissions. Fastlane's Deliver is a powerful tool that automates the process, allowing developers to focus on creating great apps. In this article, we will guide you through the process of using Fastlane's Deliver to streamline your app's deployment to the App Store.
+
+**Set Up Deliver:**
+
+To set up Deliver, navigate to your project directory using the terminal and run the following command:
+
+```
+fastlane deliver init
+```
+
+This command will create a 'Deliverfile' in your project directory, which is used to configure Deliver. Open the 'Deliverfile' in a text editor and configure the required settings, such as your app's Apple ID and team ID. You can find more information about the available options in the Deliver documentation: https://docs.fastlane.tools/actions/deliver/
+
+**Prepare Your Metadata:**
+
+Deliver uses the metadata folder in your project directory to store and manage your app's metadata, including app descriptions, keywords, and release notes. To add or update your app's metadata, navigate to the 'metadata' folder and update the corresponding '.txt' files for each language your app supports. For example, to update the English app description, edit the 'description.txt' file in the 'metadata/en-US' folder.
+
+**Prepare Your Screenshots:**
+
+Place your app's screenshots in the 'screenshots' folder within the 'metadata' folder. Organize the screenshots into subfolders based on the device type, such as 'iPhone 6.5', 'iPhone 5.5', 'iPad 12.9', etc. Ensure that your screenshots are named correctly and are in the required format (e.g., '.png' or '.jpg').
+
+**Submit Your App:**
+
+Once your metadata and screenshots are ready, you can submit your app to the App Store using Deliver. Run the following command in your project directory:
+
+```
+fastlane deliver
+```
+
+Deliver will verify your metadata, screenshots, and build, and then submit the app for review. You can monitor the submission progress on App Store Connect.
+
+**Update Metadata and Screenshots Only:**
+
+If you only need to update your app's metadata or screenshots without submitting a new build, you can use the following command:
+
+```
+fastlane deliver --skip_binary_upload
+```
+
+This command will only update your app's metadata and screenshots on App Store Connect, without submitting a new build for review.
+
+Fastlane's Deliver is a powerful tool that can help you streamline your app's deployment process, saving you time and effort. By following the steps outlined in this article, you can automate the submission of your app's metadata, screenshots, and builds to the App Store. This will allow you to focus on creating amazing apps while Deliver handles the deployment process.
+
+
+
 ...
 
